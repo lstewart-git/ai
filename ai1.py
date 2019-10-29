@@ -5,17 +5,23 @@ import tensorflow as tf
 # Helper libraries
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from PIL import Image
 
 
-# image import work
+class ai_engine(object):
+    def __init__(self):
+        pass
+
+
+# experimental image import work
 im = Image.open("mypants.jpeg")
 im = im.convert("L")
 np_im = np.array(im)
 np_im = (np.expand_dims(np_im,0))
 np_im = np_im / 255.0
 
-print ('IMAGE')
+print ('mypants IMAGE')
 print (np_im.shape)
 
 
@@ -30,9 +36,7 @@ def plot_image(i, predictions_array, true_label, img):
   plt.grid(False)
   plt.xticks([])
   plt.yticks([])
-
   plt.imshow(img, cmap=plt.cm.binary)
-
   predicted_label = np.argmax(predictions_array)
   if predicted_label == true_label:
     color = 'blue'
@@ -153,5 +157,8 @@ plt.show()
 
 print('END')
 
+if __name__ == "__main__":
+    print('Begin Program')
+    ai = ai_engine()
 
 
