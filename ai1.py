@@ -36,9 +36,9 @@ class ai_engine(object):
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-    def train_model(self):
+    def train_model(self, num_epochs):
         # train the model
-        self.model.fit(self.train_images, self.train_labels, epochs=4)
+        self.model.fit(self.train_images, self.train_labels, epochs=num_epochs)
 
     def check_test_data(self):
         # check the test data
@@ -48,140 +48,75 @@ class ai_engine(object):
         # run predictins on entire test set
         self.predictions = self.model.predict(self.test_images)
 
-    def get_image(self):
+    def get_image(self, filename):
         # get a single image to classify
-        im = Image.open("mypants.jpeg")
+        im = Image.open(filename)
         im = im.convert("L")
-        my_data = np.array(im)
-        #normalize
-        my_data = my_data / 255.0
-        my_data = (np.expand_dims(my_data,0))
+        self.my_data = np.array(im)
+        #normalize 
+        self.my_data = (abs(255 - self.my_data)) / 255.0
+       # print(self.my_data)
+        #self.my_data = (np.expand_dims(self.my_data,0))
         
-
-        print ('mypants IMAGE')
-        print (my_data.shape)
-
-
-
-'''
-# experimental image import work
-im = Image.open("mypants.jpeg")
-im = im.convert("L")
-np_im = np.array(im)
-np_im = (np.expand_dims(np_im,0))
-np_im = np_im / 255.0
-
-print ('mypants IMAGE')
-print (np_im.shape)
+    def analyze_img(self, image):
+      # add dimension for tf
+      image = (np.expand_dims(image,0))
+      predictions_array = self.model.predict(image)
+      # get rid of outer list
+      predictions_array = predictions_array[0]
+      predicted_category = np.argmax(predictions_array)
+      predicted_label = self.class_names[predicted_category]
+      return (predictions_array, predicted_label)
 
 
+    def show_plot(self, img, prediction):
+      # show a pic / graph
+      plt.xticks([])
+      plt.yticks([])
+      plt.imshow(img, cmap=plt.cm.binary)
+      plt.xlabel(prediction)
+      plt.show()
 
-
-
-
-# plotting functions
-def plot_image(i, predictions_array, true_label, img):
-  predictions_array, true_label, img = predictions_array, true_label[i], img[i]
-  plt.grid(False)
-  plt.xticks([])
-  plt.yticks([])
-  plt.imshow(img, cmap=plt.cm.binary)
-  predicted_label = np.argmax(predictions_array)
-  if predicted_label == true_label:
-    color = 'blue'
-  else:
-    color = 'red'
-
-  plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label],
-                                100*np.max(predictions_array),
-                                class_names[true_label]),
-                                color=color)
-
-
-                               
-def plot_sing_image(predictions_array, true_label, img):
-  predictions_array, true_label, img = predictions_array, true_label, img
-  plt.grid(False)
-  plt.xticks([])
-  plt.yticks([])
-
-  plt.imshow(img, cmap=plt.cm.binary)
-
-  predicted_label = np.argmax(predictions_array)
-  if predicted_label == true_label:
-    color = 'blue'
-  else:
-    color = 'red'
-
-  plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label],
-                                100*np.max(predictions_array),
-                                class_names[true_label]),
-                                color=color)
-
-def plot_value_array(i, predictions_array, true_label):
-  predictions_array, true_label = predictions_array, true_label[i]
-  plt.grid(False)
-  plt.xticks(range(10), class_names, rotation=45)
-  plt.yticks([])
-  thisplot = plt.bar(range(10), predictions_array, color="#777777")
-  plt.ylim([0, 1])
-  predicted_label = np.argmax(predictions_array)
-
-  thisplot[predicted_label].set_color('red')
-  thisplot[true_label].set_color('blue')
-               
-
-# view an image
-i = 590
-plt.figure(figsize=(12,6))
-plt.subplot(1,2,1)
-plot_image(i, predictions[i], test_labels, test_images)
-plt.subplot(1,2,2)
-plot_value_array(i, predictions[i],  test_labels)
-plt.show()
-
-
-# predict single image
-# Grab an image from the test dataset.
-#imgnum = 100
-#img = test_images[imgnum]
-img = np_im
-print ('\nTest Data')
-print (type(img))
-#print (img)
-
-
-# Add the image to a batch where it's the only member.
-#img = (np.expand_dims(img,0))
-
-predictions_single = model.predict(img)
-print('Shape 2')
-print(img.shape)
-print(predictions_single)
-predicted_label = np.argmax(predictions_single)
-print(predicted_label)
-print(class_names[predicted_label])
+    def plot_value_array(self, predictions):
+      print(predictions)
+      #plt.grid(False)
+      plt.xticks(range(10), self.class_names, rotation=45)
+      #plt.xticks([])
+      #plt.yticks([])
+      #plt.grid(False)
+      plt.bar(self.class_names, predictions)
+       #thisplot = plt.bar(range(10), predictions, color="#777777")
+      #plt.ylim([0, 1])
+     # predicted_label = np.argmax(predictions)
+      #thisplot[predicted_label].set_color('red')
+      plt.show()
 
 
 
-#plt.figure(figsize=(12,6))
-#plt.subplot(1,2,1)
-#plot_sing_image(predictions_single, 'mypants', img)
-#plt.subplot(1,2,2)
-#plot_value_array(imgnum, predictions[imgnum],  test_labels)
-plt.show()
-
-print('END')
-'''
 
 if __name__ == "__main__":
     print('\nBegin Program\n')
     ai = ai_engine()
+
+    print("LOAD DATA")
     ai.load_data()
+
+    print("COMPILE MODEL")
     ai.compile_model()
-    ai.train_model()
+
+    print("TRAIN MODEL")
+    ai.train_model(num_epochs=3)
+
+    print("CHECK TEST DATA")
     ai.check_test_data()
+
+    print("RUN PREDICTIONS")
     ai.run_predictions()
-    ai.get_image()
+
+    ai.get_image("myboot.png")
+    predictions, label = ai.analyze_img(ai.my_data)
+    ai.show_plot(ai.my_data, label)
+    ai.plot_value_array(predictions)
+  
 
 
