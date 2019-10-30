@@ -11,9 +11,59 @@ from PIL import Image
 
 class ai_engine(object):
     def __init__(self):
-        pass
+        # define dataset
+        self.fashion_mnist = tf.keras.datasets.fashion_mnist
+        self.class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+          
+        # define NN topology
+        self.model = tf.keras.Sequential([
+            tf.keras.layers.Flatten(input_shape=(28, 28)),
+            tf.keras.layers.Dense(128, activation='relu'),
+            tf.keras.layers.Dense(10, activation='softmax')
+            ])     
+        
+    def load_data(self):
+        (self.train_images, self.train_labels), (self.test_images, self.test_labels) = self.fashion_mnist.load_data()
+        # preprocess data
+        self.train_images = self.train_images / 255.0
+        self.test_images = self.test_images / 255.0
 
 
+    def compile_model(self):
+        # compile the NN
+        self.model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+    def train_model(self):
+        # train the model
+        self.model.fit(self.train_images, self.train_labels, epochs=4)
+
+    def check_test_data(self):
+        # check the test data
+        self.test_loss, self.test_acc = self.model.evaluate(self.test_images,  self.test_labels, verbose=2)
+
+    def run_predictions(self):
+        # run predictins on entire test set
+        self.predictions = self.model.predict(self.test_images)
+
+    def get_image(self):
+        # get a single image to classify
+        im = Image.open("mypants.jpeg")
+        im = im.convert("L")
+        my_data = np.array(im)
+        #normalize
+        my_data = my_data / 255.0
+        my_data = (np.expand_dims(my_data,0))
+        
+
+        print ('mypants IMAGE')
+        print (my_data.shape)
+
+
+
+'''
 # experimental image import work
 im = Image.open("mypants.jpeg")
 im = im.convert("L")
@@ -27,8 +77,7 @@ print (np_im.shape)
 
 
 
-class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
-               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
 
 # plotting functions
 def plot_image(i, predictions_array, true_label, img):
@@ -82,39 +131,6 @@ def plot_value_array(i, predictions_array, true_label):
   thisplot[true_label].set_color('blue')
                
 
-# set the dataset
-fashion_mnist = tf.keras.datasets.fashion_mnist
-
-(train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
-
-# preprocess data
-train_images = train_images / 255.0
-
-test_images = test_images / 255.0
-
-# define NN topology
-
-model = tf.keras.Sequential([
-    tf.keras.layers.Flatten(input_shape=(28, 28)),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(10, activation='softmax')
-])
-
-# compile the NN
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-
-# train the model
-model.fit(train_images, train_labels, epochs=4)
-
-# check the test data
-test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
-
-# run predictins on entire test set
-predictions = model.predict(test_images)
-
-
 # view an image
 i = 590
 plt.figure(figsize=(12,6))
@@ -156,9 +172,16 @@ print(class_names[predicted_label])
 plt.show()
 
 print('END')
+'''
 
 if __name__ == "__main__":
-    print('Begin Program')
+    print('\nBegin Program\n')
     ai = ai_engine()
+    ai.load_data()
+    ai.compile_model()
+    ai.train_model()
+    ai.check_test_data()
+    ai.run_predictions()
+    ai.get_image()
 
 
