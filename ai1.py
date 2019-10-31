@@ -20,6 +20,7 @@ class ai_engine(object):
         self.model = tf.keras.Sequential([
             tf.keras.layers.Flatten(input_shape=(28, 28)),
             tf.keras.layers.Dense(128, activation='relu'),
+            tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dense(10, activation='softmax')
             ])     
         
@@ -69,54 +70,57 @@ class ai_engine(object):
       return (predictions_array, predicted_label)
 
 
-    def show_plot(self, img, prediction):
-      # show a pic / graph
+    def show_plot(self, img, prediction, predictions):
+      # show the  pic 
+      fig= plt.figure(figsize=(12,7))
+      plt.subplot(121)
       plt.xticks([])
       plt.yticks([])
       plt.imshow(img, cmap=plt.cm.binary)
       plt.xlabel(prediction)
-      plt.show()
 
-    def plot_value_array(self, predictions):
-      print(predictions)
-      #plt.grid(False)
+      # show probability graph
+      plt.subplot(122)
       plt.xticks(range(10), self.class_names, rotation=45)
-      #plt.xticks([])
-      #plt.yticks([])
-      #plt.grid(False)
       plt.bar(self.class_names, predictions)
-       #thisplot = plt.bar(range(10), predictions, color="#777777")
-      #plt.ylim([0, 1])
-     # predicted_label = np.argmax(predictions)
-      #thisplot[predicted_label].set_color('red')
       plt.show()
 
 
 
 
+# MAIN PROGRAM ##################################################
 if __name__ == "__main__":
-    print('\nBegin Program\n')
-    ai = ai_engine()
 
-    print("LOAD DATA")
-    ai.load_data()
+  # show title, get input, set variables
 
-    print("COMPILE MODEL")
-    ai.compile_model()
+  img_list = ["outline.png", "myboot.png", "mypants.png", "myshirt.png"]
 
-    print("TRAIN MODEL")
-    ai.train_model(num_epochs=3)
+  print('\nLES AI Program\n')
+  print('Instantiate Tensorflow engine:')
+  ai = ai_engine()
+  num_epochs = input("\nNumber of training epochs?")
 
-    print("CHECK TEST DATA")
-    ai.check_test_data()
+  print("\nLOAD DATA")
+  ai.load_data()
 
-    print("RUN PREDICTIONS")
-    ai.run_predictions()
+  print("\nCOMPILE MODEL")
+  ai.compile_model()
 
-    ai.get_image("myboot.png")
+  print("\nTRAIN MODEL")
+  ai.train_model(int(num_epochs))
+
+  print("\nCHECK TEST DATA")
+  ai.check_test_data()
+
+  print("\nRUN PREDICTIONS")
+  ai.run_predictions()
+
+  # loop through custom test images
+  for test_img in img_list:
+    ai.get_image(test_img)
     predictions, label = ai.analyze_img(ai.my_data)
-    ai.show_plot(ai.my_data, label)
-    ai.plot_value_array(predictions)
+    ai.show_plot(ai.my_data, label, predictions)
+   
   
 
 
