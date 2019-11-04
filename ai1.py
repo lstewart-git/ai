@@ -86,42 +86,55 @@ class ai_engine(object):
       plt.bar(self.class_names, predictions)
       plt.show()
 
+    def show_pic(self):
+        img = Image.open("webdress.jpg")
+        plt.imshow(img, cmap=plt.cm.binary)
+        plt.show()
 
 
 
 # MAIN PROGRAM ##################################################
 if __name__ == "__main__":
 
-  # show title, get input, set variables
+    # show title, get input, set variables
 
-  img_list = ["outline.png", "myboot.png", "mypants.png", "myshirt.png"]
+    img_list = ["webdress.png", "myboot.png", "webpants.png", "myshirt.png"]
 
-  print('\nLES AI Program\n')
-  print('Instantiate Tensorflow engine:')
-  ai = ai_engine()
-  num_epochs = input("\nNumber of training epochs?")
+    print('\nLES AI Program\n')
+    print('Instantiate Tensorflow engine:')
+    ai = ai_engine()
+    num_epochs = input("\nNumber of training epochs?")
 
-  print("\nLOAD DATA")
-  ai.load_data()
+    print("\nLOAD DATA")
+    ai.load_data()
 
-  print("\nCOMPILE MODEL")
-  ai.compile_model()
+    print("\nCOMPILE MODEL")
+    ai.compile_model()
 
-  print("\nTRAIN MODEL")
-  ai.train_model(int(num_epochs))
+    print("\nTRAIN MODEL")
+    ai.train_model(int(num_epochs))
 
-  print("\nCHECK TEST DATA")
-  ai.check_test_data()
+    print("\nCHECK TEST DATA")
+    ai.check_test_data()
 
-  print("\nRUN PREDICTIONS")
-  ai.run_predictions()
+    print("\nRUN PREDICTIONS")
+    ai.run_predictions()
 
-  # loop through custom test images
-  for test_img in img_list:
-    ai.get_image(test_img)
-    predictions, label = ai.analyze_img(ai.my_data)
-    ai.show_plot(ai.my_data, label, predictions)
-   
-  
+
+    ai.show_pic()
+
+    # try a supplied test image
+    for i in range(500,505):
+        predictions, label = ai.analyze_img(ai.test_images[i])
+        ai.show_plot(ai.test_images[i], label, predictions)
+
+    # loop through custom test images
+    for test_img in img_list:
+        ai.get_image(test_img)
+        predictions, label = ai.analyze_img(ai.my_data)
+        ai.show_plot(ai.my_data, label, predictions)
+
+
+
 
 
