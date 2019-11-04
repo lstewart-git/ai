@@ -75,6 +75,8 @@ class ai_engine(object):
     def show_plot(self, img, prediction, predictions):
       # show the  pic 
       fig= plt.figure(figsize=(12,7))
+      plt.rcParams['axes.labelsize'] = 20
+      plt.rcParams['axes.labelweight'] = 'bold'
       plt.subplot(121)
       plt.xticks([])
       plt.yticks([])
@@ -97,8 +99,9 @@ class ai_engine(object):
         imarr = (abs(255 - imarr)) / 255.0
         return imarr
 
-       # plt.imshow(imarr, cmap=plt.cm.binary)
-        #plt.show()
+    def save_model(self, model_name):
+        filepath = "models/" + model_name
+        self.model.save(filepath)
 
 
 
@@ -133,24 +136,16 @@ if __name__ == "__main__":
     print("\nRUN PREDICTIONS")
     ai.run_predictions()
 
+    print("\nSave Model")
+    ai.save_model("mod1.h5")
+
     for imgname in img_list:
         img = Image.open(imgname)
         new_data = ai.normalize_data(imgname)
         predictions, label = ai.analyze_img(new_data)
         ai.show_plot(img, label, predictions)
 
-'''
-    # try a supplied test image
-    for i in range(500,505):
-        predictions, label = ai.analyze_img(ai.test_images[i])
-        ai.show_plot(ai.test_images[i], label, predictions)
 
-    # loop through custom test images
-    for test_img in img_list:
-        ai.get_image(test_img)
-        predictions, label = ai.analyze_img(ai.my_data)
-        ai.show_plot(ai.my_data, label, predictions)
-'''
 
 
 
