@@ -1,5 +1,5 @@
 # ai experimentation by les
-
+import os
 import tensorflow as tf 
 
 # Helper libraries
@@ -15,6 +15,8 @@ class ai_engine(object):
         self.fashion_mnist = tf.keras.datasets.fashion_mnist
         self.class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+        # list of filenames for inferencing
+        self.pred_files = []
           
         # define NN topology
         self.model = tf.keras.Sequential([
@@ -57,8 +59,7 @@ class ai_engine(object):
         self.my_data = np.array(im)
         #normalize 
         self.my_data = (abs(255 - self.my_data)) / 255.0
-       # print(self.my_data)
-        #self.my_data = (np.expand_dims(self.my_data,0))
+
         
     def analyze_img(self, image):
       # add dimension for tf
@@ -86,10 +87,18 @@ class ai_engine(object):
       plt.bar(self.class_names, predictions)
       plt.show()
 
-    def show_pic(self):
-        img = Image.open("webdress.jpg")
-        plt.imshow(img, cmap=plt.cm.binary)
-        plt.show()
+    def normalize_data(self, filename):
+        img = Image.open(filename)
+        size = 28,28
+        img.thumbnail(size, Image.ANTIALIAS)
+        img = img.convert("L")
+        imarr = np.array(img)
+        #normalize 
+        imarr = (abs(255 - imarr)) / 255.0
+        return imarr
+
+       # plt.imshow(imarr, cmap=plt.cm.binary)
+        #plt.show()
 
 
 
@@ -98,7 +107,11 @@ if __name__ == "__main__":
 
     # show title, get input, set variables
 
-    img_list = ["webdress.png", "myboot.png", "webpants.png", "myshirt.png"]
+    img_list = []
+
+    for dirpath,_,filenames in os.walk('images'):
+        for f in filenames:
+            img_list.append(os.path.abspath(os.path.join(dirpath, f)))
 
     print('\nLES AI Program\n')
     print('Instantiate Tensorflow engine:')
@@ -120,9 +133,13 @@ if __name__ == "__main__":
     print("\nRUN PREDICTIONS")
     ai.run_predictions()
 
+    for imgname in img_list:
+        img = Image.open(imgname)
+        new_data = ai.normalize_data(imgname)
+        predictions, label = ai.analyze_img(new_data)
+        ai.show_plot(img, label, predictions)
 
-    ai.show_pic()
-
+'''
     # try a supplied test image
     for i in range(500,505):
         predictions, label = ai.analyze_img(ai.test_images[i])
@@ -133,7 +150,7 @@ if __name__ == "__main__":
         ai.get_image(test_img)
         predictions, label = ai.analyze_img(ai.my_data)
         ai.show_plot(ai.my_data, label, predictions)
-
+'''
 
 
 
