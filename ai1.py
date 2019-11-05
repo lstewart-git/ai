@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from PIL import Image
+import random
 
 
 class ai_engine(object):
@@ -17,7 +18,8 @@ class ai_engine(object):
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
         # list of filenames for inferencing
         self.pred_files = []
-          
+
+        '''  
         # define NN topology
         self.model = tf.keras.Sequential([
             tf.keras.layers.Flatten(input_shape=(28, 28)),
@@ -26,7 +28,10 @@ class ai_engine(object):
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dense(10, activation='softmax')
             ])     
-        
+        '''
+    def load_model(self, modelpath):
+        self.model = tf.keras.models.load_model(modelpath)
+
     def load_data(self):
         (self.train_images, self.train_labels), (self.test_images, self.test_labels) = self.fashion_mnist.load_data()
         # preprocess data
@@ -111,10 +116,13 @@ if __name__ == "__main__":
     # show title, get input, set variables
 
     img_list = []
+    model_path = 'models/mod1.h5'
 
+    # get untrained test images
     for dirpath,_,filenames in os.walk('images'):
         for f in filenames:
             img_list.append(os.path.abspath(os.path.join(dirpath, f)))
+
 
     print('\nLES AI Program\n')
     print('Instantiate Tensorflow engine:')
@@ -124,11 +132,14 @@ if __name__ == "__main__":
     print("\nLOAD DATA")
     ai.load_data()
 
+    print("\nLOAD MODEL")
+    ai.load_model(model_path)
+
     print("\nCOMPILE MODEL")
-    ai.compile_model()
+    #ai.compile_model()
 
     print("\nTRAIN MODEL")
-    ai.train_model(int(num_epochs))
+    #ai.train_model(int(num_epochs))
 
     print("\nCHECK TEST DATA")
     ai.check_test_data()
@@ -139,9 +150,13 @@ if __name__ == "__main__":
     print("\nSave Model")
     ai.save_model("mod1.h5")
 
-    for imgname in img_list:
-        img = Image.open(imgname)
-        new_data = ai.normalize_data(imgname)
+    for i in range(3):
+        tot_images = len(img_list)
+        index = random.randint(1, tot_images)
+        img = Image.open(img_list[index])
+        # scale down and convert to gray for analysis
+        new_data = ai.normalize_data(img_list[index])
+        # analyze image
         predictions, label = ai.analyze_img(new_data)
         ai.show_plot(img, label, predictions)
 
