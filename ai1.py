@@ -77,19 +77,25 @@ class ai_engine(object):
       return (predictions_array, predicted_label)
 
 
-    def show_plot(self, img, prediction, predictions):
+    def show_plot(self, img, normalized, prediction, predictions):
       # show the  pic 
-      fig= plt.figure(figsize=(12,7))
+      fig= plt.figure(figsize=(16,7))
       plt.rcParams['axes.labelsize'] = 20
       plt.rcParams['axes.labelweight'] = 'bold'
-      plt.subplot(121)
+      plt.subplot(131)
       plt.xticks([])
       plt.yticks([])
       plt.imshow(img, cmap=plt.cm.binary)
       plt.xlabel(prediction)
 
+      plt.subplot(132)
+      plt.xticks([])
+      plt.yticks([])
+      plt.imshow(normalized, cmap=plt.cm.binary)
+      plt.xlabel('normalized')
+
       # show probability graph
-      plt.subplot(122)
+      plt.subplot(133)
       plt.xticks(range(10), self.class_names, rotation=45)
       plt.bar(self.class_names, predictions)
       plt.show()
@@ -152,13 +158,13 @@ if __name__ == "__main__":
 
     for i in range(3):
         tot_images = len(img_list)
-        index = random.randint(1, tot_images)
+        index = random.randint(1, tot_images-1)
         img = Image.open(img_list[index])
         # scale down and convert to gray for analysis
         new_data = ai.normalize_data(img_list[index])
         # analyze image
         predictions, label = ai.analyze_img(new_data)
-        ai.show_plot(img, label, predictions)
+        ai.show_plot(img, new_data, label, predictions)
 
 
 
