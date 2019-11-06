@@ -20,6 +20,12 @@ class ai_engine(object):
         self.pred_files = []
 
         '''  
+    
+        '''
+    def load_model(self, modelpath):
+        self.model = tf.keras.models.load_model(modelpath)
+
+    def create_model(self):
         # define NN topology
         self.model = tf.keras.Sequential([
             tf.keras.layers.Flatten(input_shape=(28, 28)),
@@ -27,10 +33,7 @@ class ai_engine(object):
             tf.keras.layers.Dense(256, activation='relu'),
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dense(10, activation='softmax')
-            ])     
-        '''
-    def load_model(self, modelpath):
-        self.model = tf.keras.models.load_model(modelpath)
+            ]) 
 
     def load_data(self):
         (self.train_images, self.train_labels), (self.test_images, self.test_labels) = self.fashion_mnist.load_data()
@@ -67,38 +70,39 @@ class ai_engine(object):
 
         
     def analyze_img(self, image):
-      # add dimension for tf
-      image = (np.expand_dims(image,0))
-      predictions_array = self.model.predict(image)
-      # get rid of outer list
-      predictions_array = predictions_array[0]
-      predicted_category = np.argmax(predictions_array)
-      predicted_label = self.class_names[predicted_category]
-      return (predictions_array, predicted_label)
+        # add dimension for tf
+        image = (np.expand_dims(image,0))
+        predictions_array = self.model.predict(image)
+        # get rid of outer list
+        predictions_array = predictions_array[0]
+        predicted_category = np.argmax(predictions_array)
+        predicted_label = self.class_names[predicted_category]
+        return (predictions_array, predicted_label)
 
 
     def show_plot(self, img, normalized, prediction, predictions):
-      # show the  pic 
-      fig= plt.figure(figsize=(16,7))
-      plt.rcParams['axes.labelsize'] = 20
-      plt.rcParams['axes.labelweight'] = 'bold'
-      plt.subplot(131)
-      plt.xticks([])
-      plt.yticks([])
-      plt.imshow(img, cmap=plt.cm.binary)
-      plt.xlabel(prediction)
+        # show the  pic 
+        fig= plt.figure(figsize=(16,7))
+        plt.rcParams['axes.labelsize'] = 20
+        plt.rcParams['axes.labelweight'] = 'bold'
+        plt.subplot(131)
+        plt.xticks([])
+        plt.yticks([])
+        plt.imshow(img, cmap=plt.cm.binary)
+        title_str = 'Guess: ' + prediction
+        plt.xlabel(title_str)
 
-      plt.subplot(132)
-      plt.xticks([])
-      plt.yticks([])
-      plt.imshow(normalized, cmap=plt.cm.binary)
-      plt.xlabel('normalized')
+        plt.subplot(132)
+        plt.xticks([])
+        plt.yticks([])
+        plt.imshow(normalized, cmap=plt.cm.binary)
+        plt.xlabel('input vector')
 
-      # show probability graph
-      plt.subplot(133)
-      plt.xticks(range(10), self.class_names, rotation=45)
-      plt.bar(self.class_names, predictions)
-      plt.show()
+        # show probability graph
+        plt.subplot(133)
+        plt.xticks(range(10), self.class_names, rotation=45)
+        plt.bar(self.class_names, predictions)
+        plt.show()
 
     def normalize_data(self, filename):
         img = Image.open(filename)
@@ -133,19 +137,23 @@ if __name__ == "__main__":
     print('\nLES AI Program\n')
     print('Instantiate Tensorflow engine:')
     ai = ai_engine()
-    num_epochs = input("\nNumber of training epochs?")
-
     print("\nLOAD DATA")
     ai.load_data()
 
-    print("\nLOAD MODEL")
-    ai.load_model(model_path)
-
-    print("\nCOMPILE MODEL")
-    #ai.compile_model()
-
-    print("\nTRAIN MODEL")
-    #ai.train_model(int(num_epochs))
+    # get control data
+    loadvar = input('(L)oad or (C)reate model?')
+    if loadvar == 'L' or loadvar == 'l':
+        print("\nLOAD MODEL")
+        ai.load_model(model_path)
+    elif loadvar == 'C' or loadvar == 'c':
+        print("\nCREATE MODEL")
+        ai.create_model()
+        num_epochs = input("\nNumber of training epochs?")
+        print("\nCOMPILE MODEL")
+        ai.compile_model()
+        print("\nTRAIN MODEL")
+        ai.train_model(int(num_epochs))
+ 
 
     print("\nCHECK TEST DATA")
     ai.check_test_data()
