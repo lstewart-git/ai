@@ -11,6 +11,9 @@ class app_driver(object):
     def __init__(self):
         # list of test images
         self.img_list = []
+        # list of available pre trained models
+        self.model_list = []
+        self.get_models()
         # keep track of new or old model loaded
         self.new_model = False
         self.model_path = 'models/5epoch.h5'
@@ -18,6 +21,13 @@ class app_driver(object):
         for dirpath,_,filenames in os.walk('images'):
             for f in filenames:
                 self.img_list.append(os.path.abspath(os.path.join(dirpath, f)))
+
+
+    def get_models(self):
+        for dirpath,_,filenames in os.walk('models'):
+            for f in filenames:
+                self.model_list.append(os.path.abspath(os.path.join(dirpath, f)))
+
 
     def show_title(self):
         print('\nLES AI Program\n')
@@ -33,6 +43,13 @@ class app_driver(object):
         self.modelname =''
         if loadvar == 'L' or loadvar == 'l':
             print("\nLOAD MODEL")
+
+            # show all available pre-trained models
+            print("\navailable models:")
+            for i in range(len(self.model_list)):
+                print(self.model_list[i])
+
+            print("")
             self.ai.load_model(self.model_path)
         elif loadvar == 'C' or loadvar == 'c':
             self.new_model = True
