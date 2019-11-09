@@ -21,12 +21,14 @@ class app_driver(object):
         for dirpath,_,filenames in os.walk('images'):
             for f in filenames:
                 self.img_list.append(os.path.abspath(os.path.join(dirpath, f)))
+                self.img_list.append(os.path.abspath(os.path.join(dirpath, 'test.jpg')))
 
 
     def get_models(self):
         for dirpath,_,filenames in os.walk('models'):
             for f in filenames:
                 self.model_list.append(os.path.abspath(os.path.join(dirpath, f)))
+
 
 
     def show_title(self):
