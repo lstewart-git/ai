@@ -3,8 +3,8 @@
 import cv2
 camera = cv2.VideoCapture(0)
 # set resolution
-camera.set(3, 1280)
-camera.set(4, 720)
+camera.set(3, 1920)
+camera.set(4, 1080)
 
 print('\nThis program will capture a frame from the webcam\n')
 print('press the "s" key to capture and quit\n')
