@@ -31,7 +31,7 @@ class ai_engine(object):
         self.model = tf.keras.Sequential([
             tf.keras.layers.Flatten(input_shape=(28, 28)),
             tf.keras.layers.Dense(128, activation='relu'),
-            tf.keras.layers.Dense(256, activation='relu'),
+            #tf.keras.layers.Dense(256, activation='relu'),
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dense(10, activation='softmax')
             ]) 
@@ -68,6 +68,9 @@ class ai_engine(object):
         self.my_data = np.array(im)
         #normalize 
         self.my_data = (abs(255 - self.my_data)) / 255.0
+        for i in range(len(self.my_data)):
+            if self.my_data[i] > 100:
+                self.my_data[i] = 255
 
         
     def analyze_img(self, image):
@@ -113,6 +116,7 @@ class ai_engine(object):
         imarr = np.array(img)
         #normalize 
         imarr = (abs(255 - imarr)) / 255.0
+ 
         return imarr
 
     def save_model(self, model_name):

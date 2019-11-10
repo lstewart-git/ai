@@ -17,11 +17,22 @@ class app_driver(object):
         # keep track of new or old model loaded
         self.new_model = False
         self.model_path = 'models/5epoch.h5'
+        my_test_img = ''
         # get custom test images
         for dirpath,_,filenames in os.walk('images'):
             for f in filenames:
                 self.img_list.append(os.path.abspath(os.path.join(dirpath, f)))
-                self.img_list.append(os.path.abspath(os.path.join(dirpath, 'test.jpg')))
+                my_test_img1=os.path.abspath(os.path.join(dirpath, 'test1.jpg'))
+                my_test_img2=os.path.abspath(os.path.join(dirpath, 'test2.jpg'))
+                my_test_img3=os.path.abspath(os.path.join(dirpath, 'test3.jpg'))
+                my_test_img4=os.path.abspath(os.path.join(dirpath, 'test4.jpg'))
+                my_test_img5=os.path.abspath(os.path.join(dirpath, 'test5.jpg'))
+        self.img_list.insert(0,my_test_img1)
+        self.img_list.insert(0,my_test_img2)
+        self.img_list.insert(0,my_test_img3)
+        self.img_list.insert(0,my_test_img4)
+        self.img_list.insert(0,my_test_img5)
+
 
 
     def get_models(self):
@@ -95,10 +106,24 @@ if __name__ == "__main__":
     # pause
     crapvar = input('Continue...')
 
+        # show some training images
+    for i in range(5):
+        tot_images = len(driver.ai.train_images)
+        index = random.randint(0, tot_images-1)
+        print('Image# '+str(index))
+        #img = Image.open(driver.ai.train_images[index])
+        img = driver.ai.train_images[index]
+        # scale down and convert to gray for analysis
+        #new_data = driver.ai.normalize_data(driver.img_list[index])
+        # analyze image
+        predictions, label = driver.ai.analyze_img(img)
+        driver.ai.show_plot(img, img, label, predictions)
+
     # show some predictions
     for i in range(10):
         tot_images = len(driver.img_list)
-        index = random.randint(0, tot_images-1)
+        #index = random.randint(0, tot_images-1)
+        index = i
         print('Image# '+str(index))
         img = Image.open(driver.img_list[index])
         # scale down and convert to gray for analysis
