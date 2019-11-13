@@ -26,8 +26,23 @@ class ai_engine(object):
     def load_model(self, modelpath):
         self.model = tf.keras.models.load_model(modelpath)
 
-    def create_model(self):
+    def create_model(self,hidden_layers=2,nodes=128):
         # define NN topology
+        layer_list = []
+
+        # create hidden layers
+        for i in range(hidden_layers):
+            this_layer = tf.keras.layers.Dense(nodes, activation='relu')
+            layer_list.append(this_layer)
+
+        # add the input layer
+        layer_list.insert(0, tf.keras.layers.Flatten(input_shape=(28, 28)))
+
+        # add the output layer
+        layer_list.append(tf.keras.layers.Dense(10, activation='softmax'))
+
+        self.model = tf.keras.Sequential(layer_list)
+        '''    
         self.model = tf.keras.Sequential([
             tf.keras.layers.Flatten(input_shape=(28, 28)),
             tf.keras.layers.Dense(128, activation='relu'),
@@ -35,6 +50,7 @@ class ai_engine(object):
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dense(10, activation='softmax')
             ]) 
+        '''
 
     def load_data(self):
         (self.train_images, self.train_labels), (self.test_images, self.test_labels) = self.fashion_mnist.load_data()

@@ -64,11 +64,15 @@ class app_driver(object):
 
             print("")
             self.ai.load_model(self.model_path)
+
         elif loadvar == 'C' or loadvar == 'c':
             self.new_model = True
             self.modelname = input('Enter new model name: ')
+            
             print("\nCREATE MODEL")
-            self.ai.create_model()
+            hidden_layers = int(input("How many hidden layers? "))
+            nodes = int(input("How many nodes? "))
+            self.ai.create_model(hidden_layers, nodes)
             num_epochs = input("\nNumber of training epochs: ")
             print("\nCOMPILE MODEL")
             self.ai.compile_model()
