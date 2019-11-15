@@ -16,7 +16,6 @@ class app_driver(object):
         self.get_models()
         # keep track of new or old model loaded
         self.new_model = False
-        self.model_path = 'models/5epoch.h5'
         my_test_img = ''
         # get custom test images
         for dirpath,_,filenames in os.walk('images'):
@@ -27,6 +26,7 @@ class app_driver(object):
                 my_test_img3=os.path.abspath(os.path.join(dirpath, 'test3.jpg'))
                 my_test_img4=os.path.abspath(os.path.join(dirpath, 'test4.jpg'))
                 my_test_img5=os.path.abspath(os.path.join(dirpath, 'test5.jpg'))
+
         self.img_list.insert(0,my_test_img1)
         self.img_list.insert(0,my_test_img2)
         self.img_list.insert(0,my_test_img3)
@@ -60,10 +60,11 @@ class app_driver(object):
             # show all available pre-trained models
             print("\navailable models:")
             for i in range(len(self.model_list)):
-                print(self.model_list[i])
+                print(i, self.model_list[i])
 
             print("")
-            self.ai.load_model(self.model_path)
+            model_index = int(input("\nSelect a model: "))
+            self.ai.load_model(self.model_list[model_index])
 
         elif loadvar == 'C' or loadvar == 'c':
             self.new_model = True
@@ -100,7 +101,9 @@ if __name__ == "__main__":
     driver = app_driver()
     driver.show_title()
     driver.start_engine()
+    # load a model or create a new one
     driver.choose_mode()
+
     driver.check_accuracy()
 
     # save a new model
@@ -110,31 +113,32 @@ if __name__ == "__main__":
     # pause
     crapvar = input('Continue...')
 
-        # show some training images
-    for i in range(5):
-        tot_images = len(driver.ai.train_images)
-        index = random.randint(0, tot_images-1)
-        print('Image# '+str(index))
-        #img = Image.open(driver.ai.train_images[index])
-        img = driver.ai.train_images[index]
-        # scale down and convert to gray for analysis
-        #new_data = driver.ai.normalize_data(driver.img_list[index])
-        # analyze image
-        predictions, label = driver.ai.analyze_img(img)
-        driver.ai.show_plot(img, img, label, predictions)
+    while True:
+        print("Show (t)raining, (p)eterman, or (c)ustom image:")
+        keypress = input()
 
-    # show some predictions
-    for i in range(10):
-        tot_images = len(driver.img_list)
-        #index = random.randint(0, tot_images-1)
-        index = i
-        print('Image# '+str(index))
-        img = Image.open(driver.img_list[index])
-        # scale down and convert to gray for analysis
-        new_data = driver.ai.normalize_data(driver.img_list[index])
-        # analyze image
-        predictions, label = driver.ai.analyze_img(new_data)
-        driver.ai.show_plot(img, new_data, label, predictions)
+        if keypress == "t":
+        # show a training image
+            tot_images = len(driver.ai.train_images)
+            index = random.randint(0, tot_images-1)
+            print('Image# '+str(index))
+            img = driver.ai.train_images[index]
+            predictions, label = driver.ai.analyze_img(img)
+            driver.ai.show_plot(img, img, label, predictions)
+
+        if keypress == "p":
+         # show some predictions
+            tot_images = len(driver.img_list)
+            index = random.randint(0, tot_images-1)
+            print('Image# '+str(index))
+            img = Image.open(driver.img_list[index])
+            # scale down and convert to gray for analysis
+            new_data = driver.ai.normalize_data(driver.img_list[index])
+            # analyze image
+            predictions, label = driver.ai.analyze_img(new_data)
+            driver.ai.show_plot(img, new_data, label, predictions)
+
+
 
 
 
