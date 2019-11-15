@@ -102,7 +102,7 @@ class ai_engine(object):
 
     def show_plot(self, img, normalized, prediction, predictions):
         # show the  pic 
-        fig= plt.figure(figsize=(16,7))
+        fig= plt.figure(figsize=(14,6))
         plt.rcParams['axes.labelsize'] = 20
         plt.rcParams['axes.labelweight'] = 'bold'
         plt.subplot(131)
@@ -122,6 +122,18 @@ class ai_engine(object):
         plt.subplot(133)
         plt.xticks(range(10), self.class_names, rotation=45)
         plt.bar(self.class_names, predictions)
+        plt.show()
+
+    def show_trnimg(self, img, index):
+        # show the  pic 
+        # fig= plt.figure(figsize=(16,7))
+        plt.rcParams['axes.labelsize'] = 20
+        plt.rcParams['axes.labelweight'] = 'bold'
+        plt.xticks([])
+        plt.yticks([])
+        plt.imshow(img, cmap=plt.cm.binary)
+        title_str = 'Label: ' + self.class_names[self.train_labels[index]]
+        plt.xlabel(title_str)
         plt.show()
 
     def normalize_data(self, filename):

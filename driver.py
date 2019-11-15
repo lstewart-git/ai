@@ -11,28 +11,21 @@ class app_driver(object):
     def __init__(self):
         # list of test images
         self.img_list = []
+        self.drawings_list = []
         # list of available pre trained models
         self.model_list = []
         self.get_models()
         # keep track of new or old model loaded
         self.new_model = False
-        my_test_img = ''
-        # get custom test images
+        # get j peterman test images
         for dirpath,_,filenames in os.walk('images'):
             for f in filenames:
                 self.img_list.append(os.path.abspath(os.path.join(dirpath, f)))
-                my_test_img1=os.path.abspath(os.path.join(dirpath, 'test1.jpg'))
-                my_test_img2=os.path.abspath(os.path.join(dirpath, 'test2.jpg'))
-                my_test_img3=os.path.abspath(os.path.join(dirpath, 'test3.jpg'))
-                my_test_img4=os.path.abspath(os.path.join(dirpath, 'test4.jpg'))
-                my_test_img5=os.path.abspath(os.path.join(dirpath, 'test5.jpg'))
 
-        self.img_list.insert(0,my_test_img1)
-        self.img_list.insert(0,my_test_img2)
-        self.img_list.insert(0,my_test_img3)
-        self.img_list.insert(0,my_test_img4)
-        self.img_list.insert(0,my_test_img5)
-
+        # get custom hand drawn test images
+        for dirpath,_,filenames in os.walk('drawings'):
+            for f in filenames:
+                self.drawings_list.append(os.path.abspath(os.path.join(dirpath, f)))
 
 
     def get_models(self):
@@ -124,7 +117,7 @@ if __name__ == "__main__":
             print('Image# '+str(index))
             img = driver.ai.train_images[index]
             predictions, label = driver.ai.analyze_img(img)
-            driver.ai.show_plot(img, img, label, predictions)
+            driver.ai.show_trnimg(img, index)
 
         if keypress == "p":
          # show some predictions
@@ -137,6 +130,21 @@ if __name__ == "__main__":
             # analyze image
             predictions, label = driver.ai.analyze_img(new_data)
             driver.ai.show_plot(img, new_data, label, predictions)
+
+        if keypress == "c":
+         # show some predictions
+            tot_images = len(driver.drawings_list)
+            index = random.randint(0, tot_images-1)
+            print('Image# '+str(index))
+            img = Image.open(driver.drawings_list[index])
+            # scale down and convert to gray for analysis
+            new_data = driver.ai.normalize_data(driver.drawings_list[index])
+            # analyze image
+            predictions, label = driver.ai.analyze_img(new_data)
+            driver.ai.show_plot(img, new_data, label, predictions)
+
+        if keypress == "q":
+            sys.exit()
 
 
 
