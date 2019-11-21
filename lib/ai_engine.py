@@ -20,9 +20,6 @@ class ai_engine(object):
         # list of filenames for inferencing
         self.pred_files = []
 
-        '''  
-    
-        '''
     def load_model(self, modelpath):
         self.model = tf.keras.models.load_model(modelpath)
 
@@ -42,15 +39,17 @@ class ai_engine(object):
         layer_list.append(tf.keras.layers.Dense(10, activation='softmax'))
 
         self.model = tf.keras.Sequential(layer_list)
-        '''    
-        self.model = tf.keras.Sequential([
-            tf.keras.layers.Flatten(input_shape=(28, 28)),
-            tf.keras.layers.Dense(128, activation='relu'),
-            #tf.keras.layers.Dense(256, activation='relu'),
-            tf.keras.layers.Dense(128, activation='relu'),
-            tf.keras.layers.Dense(10, activation='softmax')
-            ]) 
-        '''
+
+    def hard_model(self):
+        # nn model derived from example 2
+        layer_list = []
+        layer_list.append(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))
+        layer_list.append(tf.keras.layers.MaxPooling2D((2, 2)))
+        layer_list.append(tf.keras.layers.Flatten())
+        layer_list.append(tf.keras.layers.Dense(100, activation='relu', kernel_initializer='he_uniform'))
+        layer_list.append(tf.keras.layers.Dense(10, activation='softmax'))
+        self.model = tf.keras.Sequential(layer_list)
+
 
     def load_data(self):
         (self.train_images, self.train_labels), (self.test_images, self.test_labels) = self.fashion_mnist.load_data()
@@ -137,6 +136,17 @@ class ai_engine(object):
         plt.show()
 
     def normalize_data(self, filename):
+        img = Image.open(filename)
+        size = 28,28
+        img.thumbnail(size, Image.ANTIALIAS)
+        img = img.convert("L")
+        imarr = np.array(img)
+        #normalize 
+        imarr = (abs(255 - imarr)) / 255.0
+ 
+        return imarr
+
+    def normalize_data_rnn(self, filename):
         img = Image.open(filename)
         size = 28,28
         img.thumbnail(size, Image.ANTIALIAS)

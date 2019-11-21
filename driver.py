@@ -6,6 +6,7 @@ from PIL import Image
 import random
 import sys
 import os
+import numpy
 
 class app_driver(object):
     def __init__(self):
@@ -66,12 +67,24 @@ class app_driver(object):
             print("\nCREATE MODEL")
             hidden_layers = int(input("How many hidden layers? "))
             nodes = int(input("How many nodes? "))
-            self.ai.create_model(hidden_layers, nodes)
+
+            # create model here
+            #self.ai.create_model(hidden_layers, nodes)
+
+            # try hard model
+            self.ai.hard_model()
+
+            # reshape data for hard model
+            self.ai.train_images  = self.ai.train_images.reshape((self.ai.train_images.shape[0], 28, 28, 1))
+            self.ai.test_images  = self.ai.test_images.reshape((self.ai.test_images.shape[0], 28, 28, 1))
+	        
             num_epochs = input("\nNumber of training epochs: ")
             print("\nCOMPILE MODEL")
             self.ai.compile_model()
+
             print("\nTRAIN MODEL")
             self.ai.train_model(int(num_epochs))
+
         else:
             sys.exit()
 
@@ -123,12 +136,29 @@ if __name__ == "__main__":
          # show some predictions
             tot_images = len(driver.img_list)
             index = random.randint(0, tot_images-1)
+
+            # setup for hard model
+            #driver.img_list  = driver.img_list.reshape((driver.img_list.shape[0], 28, 28, 1))
+
             print('Image# '+str(index))
             img = Image.open(driver.img_list[index])
             # scale down and convert to gray for analysis
             new_data = driver.ai.normalize_data(driver.img_list[index])
+
+            print(type(new_data))
+            new_data = numpy.array(new_data)[:, :, numpy.newaxis]
+            print(new_data.shape)
+            print(type(driver.ai.train_images[0]))
+            print(driver.ai.train_images[0].shape)
+            print('\n')
+
+            #new_data = new_data.reshape((new_data.shape[0], 28, 28, 1))
+
             # analyze image
             predictions, label = driver.ai.analyze_img(new_data)
+
+            print(label)
+            cv = input('error now')
             driver.ai.show_plot(img, new_data, label, predictions)
 
         if keypress == "c":
