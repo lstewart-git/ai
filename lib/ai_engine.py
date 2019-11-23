@@ -13,6 +13,7 @@ import sys
 
 class ai_engine(object):
     def __init__(self):
+        print(" aie init")
         # define dataset
         self.fashion_mnist = tf.keras.datasets.fashion_mnist
         self.class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
@@ -21,9 +22,11 @@ class ai_engine(object):
         self.pred_files = []
 
     def load_model(self, modelpath):
+        print(" aie loadmodel")
         self.model = tf.keras.models.load_model(modelpath)
 
     def create_model(self,hidden_layers=2,nodes=128):
+        print(" aie create")
         # define NN topology
         layer_list = []
 
@@ -41,6 +44,7 @@ class ai_engine(object):
         self.model = tf.keras.Sequential(layer_list)
 
     def hard_model(self):
+        print(" aie hard")
         # nn model derived from example 2
         layer_list = []
         layer_list.append(tf.keras.layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))
@@ -52,6 +56,7 @@ class ai_engine(object):
 
 
     def load_data(self):
+        print(" aie loaddata")
         (self.train_images, self.train_labels), (self.test_images, self.test_labels) = self.fashion_mnist.load_data()
         # preprocess data
         self.train_images = self.train_images / 255.0
@@ -59,16 +64,19 @@ class ai_engine(object):
 
 
     def compile_model(self):
+        print(" aie compile")
         # compile the NN
         self.model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
     def train_model(self, num_epochs):
+        print(" aie train")
         # train the model
         self.model.fit(self.train_images, self.train_labels, epochs=num_epochs)
 
     def check_test_data(self):
+        print(" aie check")
         # check the test data
         self.test_loss, self.test_acc = self.model.evaluate(self.test_images,  self.test_labels, verbose=2)
 
@@ -136,6 +144,7 @@ class ai_engine(object):
         plt.show()
 
     def normalize_data(self, filename):
+        print(" aie normalize")
         img = Image.open(filename)
         size = 28,28
         img.thumbnail(size, Image.ANTIALIAS)
@@ -147,6 +156,7 @@ class ai_engine(object):
         return imarr
 
     def normalize_data_rnn(self, filename):
+        print(" aie norm_rnn")
         img = Image.open(filename)
         size = 28,28
         img.thumbnail(size, Image.ANTIALIAS)
@@ -158,6 +168,7 @@ class ai_engine(object):
         return imarr
 
     def save_model(self, model_name):
+        print(" aie save")
         filepath = "models/" + model_name
         self.model.save(filepath)
 

@@ -46,47 +46,20 @@ class app_driver(object):
         self.ai.load_data()
 
     def choose_mode(self):
-        loadvar = input('(L)oad or (C)reate model?')
+
         self.modelname =''
-        if loadvar == 'L' or loadvar == 'l':
-            print("\nLOAD MODEL")
 
-            # show all available pre-trained models
-            print("\navailable models:")
-            for i in range(len(self.model_list)):
-                print(i, self.model_list[i])
 
-            print("")
-            model_index = int(input("\nSelect a model: "))
-            self.ai.load_model(self.model_list[model_index])
+        # show all available pre-trained models
+        print("\navailable models:")
+        for i in range(len(self.model_list)):
+            print(i, self.model_list[i])
 
-        elif loadvar == 'C' or loadvar == 'c':
-            self.new_model = True
-            self.modelname = input('Enter new model name: ')
-            
-            print("\nCREATE MODEL")
-            hidden_layers = int(input("How many hidden layers? "))
-            nodes = int(input("How many nodes? "))
+        print("")
+        model_index = int(input("\nSelect a model: "))
+        print(self.model_list[model_index])
+        self.ai.load_model(self.model_list[model_index])
 
-            # create model here
-            self.ai.create_model(hidden_layers, nodes)
-
-            # try hard model
-            #self.ai.hard_model()
-
-            # reshape data for hard model
-            #self.ai.train_images  = self.ai.train_images.reshape((self.ai.train_images.shape[0], 28, 28, 1))
-            #self.ai.test_images  = self.ai.test_images.reshape((self.ai.test_images.shape[0], 28, 28, 1))
-	        
-            num_epochs = input("\nNumber of training epochs: ")
-            print("\nCOMPILE MODEL")
-            self.ai.compile_model()
-
-            print("\nTRAIN MODEL")
-            self.ai.train_model(int(num_epochs))
-
-        else:
-            sys.exit()
 
     def check_accuracy(self):
         print("\nCHECK TEST DATA")
@@ -112,10 +85,6 @@ if __name__ == "__main__":
 
     driver.check_accuracy()
 
-    # save a new model
-    if driver.new_model:
-        driver.save_model()
-
     # pause
     crapvar = input('Continue...')
 
@@ -133,7 +102,7 @@ if __name__ == "__main__":
             driver.ai.show_trnimg(img, index)
 
         if keypress == "p":
-         # show some predictions
+         # show some predictions with random imgs fm set
             tot_images = len(driver.img_list)
             index = random.randint(0, tot_images-1)
 
@@ -145,12 +114,10 @@ if __name__ == "__main__":
             # scale down and convert to gray for analysis
             new_data = driver.ai.normalize_data(driver.img_list[index])
 
-            print(type(new_data))
+            #print(type(new_data))
             #new_data = numpy.array(new_data)[:, :, numpy.newaxis]
-            print(new_data.shape)
-            print(type(driver.ai.train_images[0]))
-            print(driver.ai.train_images[0].shape)
-            print('\n')
+            #print(new_data.shape)
+            #print('\n')
 
             #new_data = new_data.reshape((new_data.shape[0], 28, 28, 1))
 
@@ -158,7 +125,7 @@ if __name__ == "__main__":
             predictions, label = driver.ai.analyze_img(new_data)
 
             print(label)
-            cv = input('error now')
+
             driver.ai.show_plot(img, new_data, label, predictions)
 
         if keypress == "c":
