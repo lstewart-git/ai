@@ -33,7 +33,10 @@ class ai_engine(object):
         layer_list.append(tf.keras.layers.Dense(10, activation='softmax'))
         
         # add them to a model
-        self.model = tf.keras.Sequential(layer_list)
+        # multigpu code
+        self.mirrored_strategy = tf.distribute.MirroredStrategy()
+        with self.mirrored_strategy.scope():
+            self.model = tf.keras.Sequential(layer_list)
 
 
     def load_data(self):
@@ -50,8 +53,7 @@ class ai_engine(object):
     def compile_model(self):
         # compile the NN
         # add multi-gpu code
-        mirrored_strategy = tf.distribute.MirroredStrategy()
-        with mirrored_strategy.scope():
+        with self.mirrored_strategy.scope():
             self.model.compile(optimizer='adam',
                 loss='sparse_categorical_crossentropy',
                 metrics=['accuracy'])
