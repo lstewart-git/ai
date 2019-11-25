@@ -49,9 +49,12 @@ class ai_engine(object):
 
     def compile_model(self):
         # compile the NN
-        self.model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+        # add multi-gpu code
+        mirrored_strategy = tf.distribute.MirroredStrategy()
+        with mirrored_strategy.scope():
+            self.model.compile(optimizer='adam',
+                loss='sparse_categorical_crossentropy',
+                metrics=['accuracy'])
 
     def train_model(self, num_epochs):
         # train the model
