@@ -83,52 +83,39 @@ if __name__ == "__main__":
 
     driver.check_accuracy()
 
-    # pause
-    crapvar = input('Continue...')
 
+    # terminal event loop
     while True:
-        print("Show (t)raining, (p)eterman, or (c)ustom image:")
+        print("Show (t)raining, (p)eterman, or (c)ustom, (q) to quit")
         keypress = input()
 
         if keypress == "t":
-        # show a training image
+        # show a random training image
             tot_images = len(driver.ai.train_images)
             index = random.randint(0, tot_images-1)
             print('Image# '+str(index))
             # train examples have higher dimension than images
             # so we have 2 sets available
-            img = driver.ai.train_images[index]
             disp_image = driver.ai.raw_train[index]
-            predictions, label = driver.ai.analyze_img(img)
-            print('TRN Lqabel', label)
+            label = driver.ai.train_labels[index]
+            # replace this with a display module
             driver.ai.show_trnimg(disp_image, index)
 
         if keypress == "p":
          # show some predictions with random imgs fm set
             tot_images = len(driver.img_list)
             index = random.randint(0, tot_images-1)
-
-            # setup for hard model
-            #driver.img_list  = driver.img_list.reshape((driver.img_list.shape[0], 28, 28, 1))
-
             print('Image# '+str(index))
+            #get original image:
             img = Image.open(driver.img_list[index])
-            # scale down and convert to gray for analysis
-            new_data = driver.ai.normalize_data(driver.img_list[index])
-
-            #print(type(new_data))
-            #new_data = numpy.array(new_data)[:, :, numpy.newaxis]
-            #print(new_data.shape)
-            #print('\n')
-
-            #new_data = new_data.reshape((new_data.shape[0], 28, 28, 1))
-
+            #convert to mnist format
+            converted_img = driver.ai.normalize_data(driver.img_list[index])
+            #reshape for the cnn model
+            inference_img = converted_img.reshape((28, 28, 1)) 
             # analyze image
-            predictions, label = driver.ai.analyze_img(new_data)
-
-            print(label)
-
-            driver.ai.show_plot(img, new_data, label, predictions)
+            predictions, label = driver.ai.analyze_img(inference_img)
+            # show the results
+            driver.ai.show_plot(img, converted_img, label, predictions)
 
         if keypress == "c":
          # show some predictions
@@ -136,11 +123,14 @@ if __name__ == "__main__":
             index = random.randint(0, tot_images-1)
             print('Image# '+str(index))
             img = Image.open(driver.drawings_list[index])
-            # scale down and convert to gray for analysis
-            new_data = driver.ai.normalize_data(driver.drawings_list[index])
+            #convert to mnist format
+            converted_img = driver.ai.normalize_data(driver.drawings_list[index])
+            #reshape for the cnn model
+            inference_img = converted_img.reshape((28, 28, 1)) 
             # analyze image
-            predictions, label = driver.ai.analyze_img(new_data)
-            driver.ai.show_plot(img, new_data, label, predictions)
+            predictions, label = driver.ai.analyze_img(inference_img)
+            # show the results
+            driver.ai.show_plot(img, converted_img, label, predictions)
 
         if keypress == "q":
             sys.exit()
