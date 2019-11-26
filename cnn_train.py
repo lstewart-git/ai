@@ -68,8 +68,10 @@ class ai_engine(object):
 
 
     def save_model(self, model_name):
+        model_name = model_name + '.h5'
         filepath = "models/" + model_name
         self.model.save(filepath)
+        
 
 # MAIN PROGRAM ##################################################
 if __name__ == "__main__":
@@ -83,11 +85,8 @@ if __name__ == "__main__":
     print("\nCOMPILE MODEL")
     my_cnn.compile_model()
 
-
-    start = time.time()
-
     
-
+    start = time.time()
     print("\nTRAIN MODEL")
     my_cnn.train_model(int(num_epochs))    
     
