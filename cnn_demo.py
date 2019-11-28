@@ -1,5 +1,6 @@
 # custom ai library by les
 import lib.cnn_engine
+import lib.cam_engine
 
 # Helper libraries
 from PIL import Image
@@ -86,7 +87,7 @@ if __name__ == "__main__":
 
     # terminal event loop
     while True:
-        print("Show (t)raining, (p)eterman, or (c)ustom, (q) to quit")
+        print("Show (t)raining, (p)eterman, or (c)ustom, (w)ebcam, (q) to quit")
         keypress = input()
 
         if keypress == "t":
@@ -110,6 +111,24 @@ if __name__ == "__main__":
             img = Image.open(driver.img_list[index])
             #convert to mnist format
             converted_img = driver.ai.normalize_data(driver.img_list[index])
+            #reshape for the cnn model
+            inference_img = converted_img.reshape((28, 28, 1)) 
+            # analyze image
+            predictions, label = driver.ai.analyze_img(inference_img)
+            # show the results
+            driver.ai.show_plot(img, converted_img, label, predictions)
+
+        if keypress == "w":
+         # infer a webcam image
+            # call webcam driver module
+            cam_driver = lib.cam_engine.cam_engine()
+            #get cam image:
+            img = Image.open(cam_driver.get_image())
+
+
+
+            #convert to mnist format
+            converted_img = driver.ai.normalize_data(img )
             #reshape for the cnn model
             inference_img = converted_img.reshape((28, 28, 1)) 
             # analyze image
