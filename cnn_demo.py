@@ -108,6 +108,7 @@ if __name__ == "__main__":
             index = random.randint(0, tot_images-1)
             print('Image# '+str(index))
             #get original image:
+            #this takes a path to file
             img = Image.open(driver.img_list[index])
             #convert to mnist format
             converted_img = driver.ai.normalize_data(driver.img_list[index])
@@ -122,13 +123,19 @@ if __name__ == "__main__":
          # infer a webcam image
             # call webcam driver module
             cam_driver = lib.cam_engine.cam_engine()
+
             #get cam image:
-            img = Image.open(cam_driver.get_image())
+            # this results in numpy array
+            img = cam_driver.get_image()
 
-
+            #convert numpy array to PILLOW image for topographic processing
+            img_obj = Image.fromarray(img.astype('uint8'), 'RGB')
 
             #convert to mnist format
-            converted_img = driver.ai.normalize_data(img )
+            converted_img = driver.ai.normalize_webcam(img_obj)
+            print(converted_img.shape)
+
+
             #reshape for the cnn model
             inference_img = converted_img.reshape((28, 28, 1)) 
             # analyze image

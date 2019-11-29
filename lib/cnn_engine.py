@@ -152,9 +152,34 @@ class cnn_engine(object):
     def normalize_data(self, filename):
         print(" aie normalize")
         img = Image.open(filename)
+        print(type(img))
         size = 28,28
         img.thumbnail(size, Image.ANTIALIAS)
         img = img.convert("L")
+        imarr = np.array(img)
+        #normalize 
+        imarr = (abs(255 - imarr)) / 255.0
+ 
+        return imarr
+
+    def normalize_webcam(self, img_obj):
+        print(" webcam aie normalize")
+        #first crop it to a square in the center
+        width, height = img_obj.size   # Get dimensions
+        print(img_obj.size)
+        new_width = 720
+        new_height = 720
+        left = (width - new_width)/2
+        top = (height - new_height)/2
+        right = (width + new_width)/2
+        bottom = (height + new_height)/2
+        # Crop the center of the image
+        img_obj = img_obj.crop((left, top, right, bottom))
+
+
+        size = 28,28
+        img_obj.thumbnail(size, Image.ANTIALIAS)
+        img = img_obj.convert("L")
         imarr = np.array(img)
         #normalize 
         imarr = (abs(255 - imarr)) / 255.0
