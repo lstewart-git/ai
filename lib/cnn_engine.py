@@ -9,6 +9,7 @@ import matplotlib.image as mpimg
 from PIL import Image
 import random
 import sys
+import cv2
 
 
 class cnn_engine(object):
@@ -150,6 +151,10 @@ class cnn_engine(object):
         plt.show()
 
     def normalize_data(self, filename):
+        # convert this to cv2 instead of Image
+        # this function will change low val pixels to white
+        # need a way to select threshold value intelligently
+        #ret,thresh3 = cv.threshold(img,127,255,cv.THRESH_TRUNC)
         print(" aie normalize")
         img = Image.open(filename)
         print(type(img))
