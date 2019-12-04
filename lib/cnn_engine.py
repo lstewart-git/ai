@@ -173,6 +173,7 @@ class cnn_engine(object):
         return imarr
 
     def normalize_webcam(self, img_obj):
+        # using pillow here, try cv2
         print(" webcam aie normalize")
         size = 28,28
         img_obj.thumbnail(size, Image.ANTIALIAS)
@@ -181,6 +182,22 @@ class cnn_engine(object):
         #normalize 
         imarr = (abs(255 - imarr)) / 255.0
  
+        return imarr
+
+    def normalize_webcam_cv(self, img_obj):
+        # using pillow here, try cv2
+        print(" webcam cv2 normalize")
+        size = 28,28
+        #img_obj.thumbnail(size, Image.ANTIALIAS)
+        sm_img = cv2.resize(img_obj,size)
+        #img = img_obj.convert("L")
+        img_gray = cv2.cvtColor(sm_img, cv2.COLOR_BGR2GRAY)
+        #imarr = np.array(img)
+        #normalize 
+        imarr = (abs(255 - img_gray)) / 255.0
+        # save it
+        cv2.imwrite('imageS.png',img_gray) 
+
         return imarr
 
     def normalize_data_rnn(self, filename):

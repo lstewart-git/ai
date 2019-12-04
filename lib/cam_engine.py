@@ -27,6 +27,7 @@ class cam_engine(object):
     def get_image(self):
         #get an image for analysis
         filename = 'capture.jpg'
+        filename2 = 'capture2.jpg'
         while True:
             return_value,image = self.camera.read()
             raw_image = image.copy()
@@ -42,6 +43,9 @@ class cam_engine(object):
         cv2.destroyAllWindows()
         # crop the image to the part of interest
         crop_img = raw_image[self.LRy:self.ULy, self.ULx:self.LRx]
+        cv2.imwrite(filename2,crop_img)
+        # returned as BGR from opencv need RGB for rest of world
+        crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2RGB)        
         return crop_img
 
 # MAIN PROGRAM ##################################################

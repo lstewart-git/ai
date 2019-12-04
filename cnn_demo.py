@@ -120,19 +120,26 @@ if __name__ == "__main__":
             # this results in numpy array
             img = cam_driver.get_image()
 
-            #convert numpy array to PILLOW image for topographic processing
-            img_obj = Image.fromarray(img.astype('uint8'), 'RGB')
-
             #convert to mnist format
-            converted_img = driver.ai.normalize_webcam(img_obj)
-            print(converted_img.shape)
+            converted_img = driver.ai.normalize_webcam_cv(img)
+            print(type(converted_img))
+            # copy image here for saving to disk
+            save_image = Image.fromarray(converted_img, 'L')
 
+            # convert uint8 to float for tensorflow input
+            converted_img = converted_img.astype(float)
+            
+
+            
             #reshape for the cnn model
             inference_img = converted_img.reshape((28, 28, 1)) 
             # analyze image
             predictions, label = driver.ai.analyze_img(inference_img)
             # show the results
             driver.ai.show_plot(img, converted_img, label, predictions)
+            saveit = input("Save it")
+            save_image.save('saveimage.png')
+            
 
         if keypress == "c":
          # show some predictions
