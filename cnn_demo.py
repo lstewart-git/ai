@@ -64,26 +64,18 @@ class app_driver(object):
         print("\nCHECK TEST DATA")
         self.ai.check_test_data()
 
-    def save_model(self):
-        print("\nSave Model")
-        self.modelname = self.modelname + '.h5'
-        self.ai.save_model(self.modelname)
-
 
 
 
 # MAIN PROGRAM ##################################################
 if __name__ == "__main__":
-
     # start app
     driver = app_driver()
     driver.show_title()
     driver.start_engine()
     # load a model or create a new one
     driver.choose_model()
-
     driver.check_accuracy()
-
 
     # terminal event loop
     while True:
@@ -134,7 +126,6 @@ if __name__ == "__main__":
             #convert to mnist format
             converted_img = driver.ai.normalize_webcam(img_obj)
             print(converted_img.shape)
-
 
             #reshape for the cnn model
             inference_img = converted_img.reshape((28, 28, 1)) 
