@@ -157,14 +157,19 @@ class cnn_engine(object):
         #ret,thresh3 = cv.threshold(img,127,255,cv.THRESH_TRUNC)
         print(" aie normalize")
         img = Image.open(filename)
-        print(type(img))
+        #img = cv2.imread(filename,0)
         size = 28,28
         img.thumbnail(size, Image.ANTIALIAS)
+        #img = cv2.resize(img, (28,28), interpolation = cv2.INTER_AREA)
         img = img.convert("L")
+        #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        #ret,thresh3 = cv2.threshold(img,225,255,cv2.THRESH_TRUNC)
         imarr = np.array(img)
+        #imarr = np.array(thresh3)
         #normalize 
         imarr = (abs(255 - imarr)) / 255.0
- 
+
+        # returns numpy array
         return imarr
 
     def normalize_webcam(self, img_obj):
