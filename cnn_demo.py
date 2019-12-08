@@ -8,6 +8,7 @@ import random
 import sys
 import os
 import numpy
+import cv2
 
 class app_driver(object):
     def __init__(self):
@@ -20,7 +21,7 @@ class app_driver(object):
         # keep track of new or old model loaded
         self.new_model = False
         # get j peterman test images
-        for dirpath,_,filenames in os.walk('images'):
+        for dirpath,_,filenames in os.walk('peterman'):
             for f in filenames:
                 self.img_list.append(os.path.abspath(os.path.join(dirpath, f)))
 
@@ -119,26 +120,28 @@ if __name__ == "__main__":
             #get cam image:
             # this results in numpy array
             img = cam_driver.get_image()
+            save_image1 = Image.fromarray(img, 'RGB')
+            save_image1.save('saveimage1.png')            
 
-            #convert to mnist format
-            converted_img = driver.ai.normalize_webcam_cv(img)
-            print(type(converted_img))
-            # copy image here for saving to disk
-            save_image = Image.fromarray(converted_img, 'L')
-
+            #convert to mnist format, return 
+            img_tuple = driver.ai.normalize_webcam_cv(img)
+            converted_img = img_tuple[0]
+            cv2img = img_tuple[1]
+            
             # convert uint8 to float for tensorflow input
             converted_img = converted_img.astype(float)
             
+            # save the vectorized image
+            cv2.imwrite('imageNew.png',cv2img) 
 
-            
             #reshape for the cnn model
             inference_img = converted_img.reshape((28, 28, 1)) 
+            
             # analyze image
             predictions, label = driver.ai.analyze_img(inference_img)
+            
             # show the results
             driver.ai.show_plot(img, converted_img, label, predictions)
-            saveit = input("Save it")
-            save_image.save('saveimage.png')
             
 
         if keypress == "c":

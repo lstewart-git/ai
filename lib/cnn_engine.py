@@ -19,6 +19,9 @@ class cnn_engine(object):
         self.fashion_mnist = tf.keras.datasets.fashion_mnist
         self.class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+        
+        self.LES_classes = ['T-shirt', 'Pants', 'Dress', 'Coat', 'Shirt', 'Sheep', 'Bag', 'Shoe']        
+        
         # list of filenames for inferencing
         self.pred_files = []
 
@@ -195,10 +198,11 @@ class cnn_engine(object):
         #imarr = np.array(img)
         #normalize 
         imarr = (abs(255 - img_gray)) / 255.0
+        #imarr = img_gray
         # save it
-        cv2.imwrite('imageS.png',img_gray) 
+        #cv2.imwrite('imageS.png',img_gray) 
 
-        return imarr
+        return imarr, img_gray
 
     def normalize_data_rnn(self, filename):
         print(" aie norm_rnn")
