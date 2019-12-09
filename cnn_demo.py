@@ -36,8 +36,6 @@ class app_driver(object):
             for f in filenames:
                 self.model_list.append(os.path.abspath(os.path.join(dirpath, f)))
 
-
-
     def show_title(self):
         print('\nLES AI Program\n')
         print('Instantiate Tensorflow engine:')
@@ -66,7 +64,24 @@ class app_driver(object):
         self.ai.check_test_data()
 
 
-
+    def save_images(self, PIL_img, cv2_vect_img):
+        # save the images in appropriate locations
+        cat_list = ['t-shirt', 'pants', 'dress', 'coat', 'shirt', 'sheep', 'purse', 'shoe']
+        
+        # print menu
+        for i in range(8):
+            print(i, cat_list[i])
+            
+        # get selection
+        selection = int(input("Select a class:"))
+        
+        # construct path
+        vect_path = 'data/training/' + cat_list[selection] + '/' + 'tets1.png'
+        # PIL type
+        PIL_img.save('saveimage1.png')
+        # cv2 type
+        cv2.imwrite(vect_path,cv2_vect_img)         
+        
 
 # MAIN PROGRAM ##################################################
 if __name__ == "__main__":
@@ -120,20 +135,18 @@ if __name__ == "__main__":
             #get cam image:
             # this results in numpy array
             img = cam_driver.get_image()
-            save_image1 = Image.fromarray(img, 'RGB')
-            save_image1.save('saveimage1.png')            
+            # convert to PIL Image
+            full_image = Image.fromarray(img, 'RGB')
+                        
 
             #convert to mnist format, return 
             img_tuple = driver.ai.normalize_webcam_cv(img)
             converted_img = img_tuple[0]
-            cv2img = img_tuple[1]
+            cv2_input_vect_img = img_tuple[1]
             
             # convert uint8 to float for tensorflow input
             converted_img = converted_img.astype(float)
-            
-            # save the vectorized image
-            cv2.imwrite('imageNew.png',cv2img) 
-
+             
             #reshape for the cnn model
             inference_img = converted_img.reshape((28, 28, 1)) 
             
@@ -142,6 +155,9 @@ if __name__ == "__main__":
             
             # show the results
             driver.ai.show_plot(img, converted_img, label, predictions)
+            
+            # save the images
+            driver.save_images(full_image, cv2_input_vect_img)
             
 
         if keypress == "c":
