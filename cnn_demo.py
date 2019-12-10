@@ -63,6 +63,15 @@ class app_driver(object):
         print("\nCHECK TEST DATA")
         self.ai.check_test_data()
 
+    def get_filename(self, subdirectory):
+        file_list = os.listdir(subdirectory) 
+        print(file_list)
+        ct_str = str(len(file_list))
+        ct_str = ct_str.zfill(4)
+        filename ='img' + ct_str +'.png'
+        print(ct_str)
+        
+        return filename
 
     def save_images(self, PIL_img, cv2_vect_img):
         # save the images in appropriate locations
@@ -76,7 +85,9 @@ class app_driver(object):
         selection = int(input("Select a class:"))
         
         # construct path
-        vect_path = 'data/training/' + cat_list[selection] + '/' + 'tets1.png'
+        vect_path ='data/training/' + cat_list[selection] + '/' 
+        flnm = self.get_filename(vect_path)
+        vect_path ='data/training/' + cat_list[selection] + '/' + flnm
         # PIL type
         PIL_img.save('saveimage1.png')
         # cv2 type
@@ -96,7 +107,8 @@ if __name__ == "__main__":
     # terminal event loop
     while True:
         print("Show (t)raining, (p)eterman, or (c)ustom, (w)ebcam, (q) to quit")
-        keypress = input()
+        keypress = input('well:')
+        print(keypress)
 
         if keypress == "t":
         # show a random training image
