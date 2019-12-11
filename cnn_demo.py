@@ -86,10 +86,16 @@ class app_driver(object):
         
         # construct path
         vect_path ='data/training/' + cat_list[selection] + '/' 
-        flnm = self.get_filename(vect_path)
-        vect_path ='data/training/' + cat_list[selection] + '/' + flnm
+        pil_path ='drawings/' + cat_list[selection] + '/' 
+
+        vect_flnm = self.get_filename(vect_path)
+        pil_flnm = self.get_filename(pil_path)
+
+        vect_path ='data/training/' + cat_list[selection] + '/' + vect_flnm
+        pil_path ='drawings/' + cat_list[selection] + '/' + pil_flnm
+
         # PIL type
-        PIL_img.save('saveimage1.png')
+        PIL_img.save(pil_path)
         # cv2 type
         cv2.imwrite(vect_path,cv2_vect_img)         
         
