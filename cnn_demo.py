@@ -66,7 +66,7 @@ class app_driver(object):
     def get_filename(self, subdirectory):
         file_list = os.listdir(subdirectory) 
         print(file_list)
-        ct_str = str(len(file_list))
+        ct_str = str(len(file_list) + 1)
         ct_str = ct_str.zfill(4)
         filename ='img' + ct_str +'.png'
         print(ct_str)
