@@ -195,8 +195,10 @@ class cnn_engine(object):
 
         img_gray = cv2.cvtColor(sm_img, cv2.COLOR_BGR2GRAY)
 
+        ret,img_thresh = cv2.threshold(img_gray,160,255,cv2.THRESH_TRUNC)
+
         #normalize 
-        imarr = (abs(255 - img_gray)) / 255.0
+        imarr = (abs(255 - img_thresh)) / 255.0
 
         return imarr, img_gray
 
