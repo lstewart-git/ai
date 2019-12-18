@@ -150,7 +150,6 @@ if __name__ == "__main__":
             # call webcam driver module
             cam_driver = lib.cam_engine.cam_engine()
 
-            #get cam image:
             # this results in numpy array
             img = cam_driver.get_image()
             # convert to PIL Image

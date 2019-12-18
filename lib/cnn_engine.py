@@ -190,17 +190,22 @@ class cnn_engine(object):
     def normalize_webcam_cv(self, img_obj):
 
         size = 28,28
+        # convert full size to gray
+        img_gray = cv2.cvtColor(img_obj, cv2.COLOR_BGR2GRAY)
 
-        sm_img = cv2.resize(img_obj,size)
+        # wipe low val pixels with threshold func
+        ret,img_thresh = cv2.threshold(img_gray,190,255,cv2.THRESH_TRUNC)
 
-        img_gray = cv2.cvtColor(sm_img, cv2.COLOR_BGR2GRAY)
+        #convert for display
+        vect_display = (abs(255 - img_thresh)) / 255.0
 
-        ret,img_thresh = cv2.threshold(img_gray,160,255,cv2.THRESH_TRUNC)
+        # resize display image
+        vect_display = cv2.resize(vect_display,size)
 
-        #normalize 
-        imarr = (abs(255 - img_thresh)) / 255.0
+         # resize inference image
+        img_thresh = cv2.resize(img_thresh,size)
 
-        return imarr, img_gray
+        return vect_display, img_thresh
 
     def normalize_data_rnn(self, filename):
         print(" aie norm_rnn")
